@@ -1,7 +1,8 @@
-from similarity import Similarity
-from similarity import ConvertPdf
+import Similarity
+import ConvertPdf
 import requests
 import io
+import json
 
 def scoreHandler(event, context):
     file1Url = event["file1"]
@@ -17,7 +18,11 @@ def scoreHandler(event, context):
         fileStream2 = io.BytesIO(file2.content)
         text1 = pdf.convertPDF(fileStream1)
         text2 = pdf.convertPDF(fileStream2)
-        return sim.similarity(text1, text2)
+        returnVal = {}
+        returnVal["sim"] = sim.similarity(text1, text2)
+
+
+        return json.dumps(returnVal)
 
     return 0
 

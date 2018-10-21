@@ -1,7 +1,6 @@
 import string
-from scipy.spatial import distance
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
+import math
+
 
 class Similarity:
 
@@ -20,6 +19,19 @@ class Similarity:
                 dict2[key] = 0
 
         return dict2
+
+    def doTheMath(self, vector1, vector2):
+
+        numerator = 0
+        denom1, denom2 = (0, 0)
+        for i in range(0, len(vector1)):
+            numerator += (vector1[i] * vector2[i])
+            denom1 += vector1[i]**2
+            denom2 += vector2[i]**2
+
+        return numerator / (math.sqrt(denom1) * math.sqrt(denom2))
+
+
 
     def cosineSimilarity(self):
         text1count = {}
@@ -53,17 +65,14 @@ class Similarity:
             vector1.insert(-1, text1count[key])
             vector2.insert(-1, text2count[key])
 
-        difference = 1 - distance.cosine(vector1, vector2)
+        difference = self.doTheMath(vector1, vector2)
 
         return difference
 
     def similarity(self, text1, text2):
 
-        self.text1tokens = word_tokenize(text1)
-        self.text2tokens = word_tokenize(text2)
-        stopWords = set(stopwords.words('english'))
-        self.text1tokens = [w for w in self.text1tokens if not w in stopWords]
-        self.text2tokens = [w for w in self.text2tokens if not w in stopWords]
+        self.text1tokens = text1.split()
+        self.text2tokens = text2.split()
         return self.cosineSimilarity()
 
 
@@ -73,4 +82,4 @@ class Similarity:
 #
 #     sim = Similarity()
 #     sim.similarity(text1, text2)
-#
+
